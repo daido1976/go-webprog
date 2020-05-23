@@ -3,8 +3,7 @@ package main
 import "fmt"
 
 func main() {
-	var i int
-	fmt.Scan(&i)
+	i := scanNumber()
 
 	if i%15 == 0 {
 		fmt.Printf("FizzBuzz\n")
@@ -15,4 +14,12 @@ func main() {
 	} else {
 		fmt.Printf("%d\n", i)
 	}
+}
+
+func scanNumber() int {
+	var i int
+
+	fmt.Printf("Please input number.\n")
+	fmt.Scan(&i)
+	return i
 }
