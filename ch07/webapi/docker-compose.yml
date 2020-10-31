@@ -1,6 +1,7 @@
 # $ docker-compose -f ./ch07/webapi/docker-compose.yml [command]
-# postgres ユーザ、およびデータベースの作成、初期化スクリプト（docker-entrypoint-initdb.d）の実行は
-# 初回起動時のみに行われるので注意。再起動するには pg_data の volume を一度削除する必要がある。
+#
+# postgres ユーザ、およびデータベースの作成、初期化スクリプトの実行は初回起動時のみに行われるので注意。
+# 再起動するには pg_data の volume を一度削除する必要がある。
 # https://github.com/docker-library/postgres/issues/203#issuecomment-255200501
 # 以下のような感じ。
 # $ docker-compose -f ./ch07/webapi/docker-compose.yml down
@@ -9,7 +10,7 @@
 version: "3"
 
 services:
-  postgres: # (*1)
+  postgres:
     image: postgres:13.0-alpine
     container_name: go-webapi-postgres
     ports:
@@ -20,9 +21,11 @@ services:
       - POSTGRES_DB=gwp
     volumes:
       - pg_data:/var/lib/postgresql/data
+      # コンテナ内の /docker-entrypoint-initdb.d に置かれた `*.sql` や `*.sh` のスクリプトは初期化スクリプトとし実実行される。
+      # https://hub.docker.com/_/postgres の Initialization scripts 参照。
       - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
 
 volumes:
+  # Named volumes must be listed under the top-level volumes key.
+  # https://docs.docker.com/compose/compose-file/#volumes
   pg_data:
-# (*1) psql を使って接続可能
-# $ docker-compose run --rm postgres psql -h go-webapi-postgres -U gwp
