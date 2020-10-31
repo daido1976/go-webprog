@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 
 	_ "github.com/lib/pq"
 )
@@ -15,6 +16,19 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+// Get the list of post
+func list() (posts []Post, err error) {
+	rows, err := Db.Query("select id, content, author from posts")
+
+	for i := 0; rows.Next(); i = i + 1 {
+		posts = append(posts, Post{})
+		if err := rows.Scan(&posts[i].Id, &posts[i].Content, &posts[i].Author); err != nil {
+			fmt.Println(err)
+		}
+	}
+	return
 }
 
 // Get a single post

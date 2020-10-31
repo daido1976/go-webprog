@@ -19,8 +19,28 @@ func main() {
 		Addr: ":8080",
 	}
 	http.HandleFunc("/post/", handleRequest)
+	http.HandleFunc("/posts", handleList)
 	fmt.Printf("start server localhost%s \n", server.Addr)
 	server.ListenAndServe()
+}
+
+func handleList(w http.ResponseWriter, r *http.Request) {
+	posts, err := list()
+	if err != nil {
+		return
+	}
+	encoder := json.NewEncoder(w)
+	encoder.SetIndent("", "  ")
+	encoder.Encode(&posts)
+	if err != nil {
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 // main handler function
@@ -53,7 +73,7 @@ func handleGet(w http.ResponseWriter, r *http.Request) (err error) {
 	if err != nil {
 		return
 	}
-	output, err := json.MarshalIndent(&post, "", "\t\t")
+	output, err := json.MarshalIndent(&post, "", "  ")
 	if err != nil {
 		return
 	}
