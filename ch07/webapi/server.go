@@ -1,16 +1,8 @@
-/*
-＜まずPostgreSQLを起動＞
-$ psql -f install.sql
-$ psql -f setup.sql
-$ go build
-$ ./14web_service &
-$ ./script_create
-$ psql -U gwp -d gwp -c "select * from posts;"
-*/
 package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"path"
 	"strconv"
@@ -27,6 +19,7 @@ func main() {
 		Addr: ":8080",
 	}
 	http.HandleFunc("/post/", handleRequest)
+	fmt.Printf("start server localhost%s \n", server.Addr)
 	server.ListenAndServe()
 }
 
