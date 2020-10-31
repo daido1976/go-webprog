@@ -29,13 +29,13 @@ func handleList(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
+	w.Header().Set("Content-Type", "application/json")
 	encoder := json.NewEncoder(w)
 	encoder.SetIndent("", "  ")
 	encoder.Encode(&posts)
 	if err != nil {
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
