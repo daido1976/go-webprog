@@ -4,6 +4,11 @@
 # 再起動するには pg_data の volume を一度削除する必要がある。
 # https://github.com/docker-library/postgres/issues/203#issuecomment-255200501
 # 以下のような感じ。
+# ボリュームにホストの ./data/postgres を指定している場合
+# $ docker-compose -f ./ch07/webapi/docker-compose.yml down
+# $ rm -rf ch07/webapi/data/postgres
+# $ docker-compose -f ./ch07/webapi/docker-compose.yml up
+# 名前付きボリューム（Named volume）の場合
 # $ docker-compose -f ./ch07/webapi/docker-compose.yml down
 # $ docker volume rm webapi_pg_data
 # $ docker-compose -f ./ch07/webapi/docker-compose.yml up
@@ -20,12 +25,14 @@ services:
       - POSTGRES_USER=gwp
       - POSTGRES_DB=gwp
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      # When use relative path
+      - ./data/postgres:/var/lib/postgresql/data
+      # When use Named volumes
+      # - pg_data:/var/lib/postgresql/data
       # コンテナ内の /docker-entrypoint-initdb.d に置かれた `*.sql` や `*.sh` のスクリプトは初期化スクリプトとし実実行される。
       # https://hub.docker.com/_/postgres の Initialization scripts 参照。
       - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-
-volumes:
-  # Named volumes must be listed under the top-level volumes key.
-  # https://docs.docker.com/compose/compose-file/#volumes
-  pg_data:
+# Named volumes must be listed under the top-level volumes key.
+# https://docs.docker.com/compose/compose-file/#volumes
+# volumes:
+#   pg_data:
